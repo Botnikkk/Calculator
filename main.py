@@ -12,7 +12,6 @@ def check_var(calculation) :
             except :
                 string += i
                 continue
-
                 
 def try_sum(num_str) :
     sum = 0 
@@ -20,6 +19,7 @@ def try_sum(num_str) :
     for i in num_str :
         num_list = str(i).split("+")
         for i in num_list : 
+            i = str(i).strip()
             try :
                 a = int(i) 
                 sum += a 
@@ -44,6 +44,7 @@ def try_sub(num_str) :
         try :
             sub = int(num_list[0])
             for i in num_list[1:len(num_list)+1] : 
+                i = str(i).strip()
                 try :
                     sub -= int(i)
                 except :
@@ -64,6 +65,7 @@ def try_sub(num_str) :
                 mul_output = try_mul(num_list[0])
                 sub = mul_output
             for i in num_list[1:len(num_list)+1] : 
+                i = str(i).strip()
                 try :       
                     sub -= int(i)
                 except :
@@ -84,6 +86,7 @@ def try_mul(num_str) :
     mul = 1
     num_list = str(num_str).split("x")
     for i in num_list :
+        i = str(i).strip()
         if "/" in  i :
             div_output = try_div(i)
             if div_output == 0 :
@@ -100,20 +103,23 @@ def try_div(num_str) :
     final_div=0
     num_list = str(num_str).split("/")
     if len(num_list) > 1 :
-        final_div = int(num_list[0])
+        final_div = int(num_list[0].strip())
         for i in num_list[1:] : 
+                i = str(i).strip()
                 try :
                     final_div /= int(i)
                 except :
                     continue        
     return float(final_div)
 
-def calc() : 
-    calculation = input("Enter the calculation you want to perform\n- ")
-    
+def calc(calculation) :  
     sum_output = try_sum([calculation])
     sub_output = try_sub(sum_output[1])
-    print(int(sum_output[0]) + sub_output)
+    ans = int(sum_output[0]) + sub_output
+    print(ans)
 
-while 1 < 2 :
-    calc()
+calculation = input("Enter the calculation you want to perform\n- ")  
+while calculation.lower() != 'end' :
+    calc(calculation)
+    calculation = input("Enter the calculation you want to perform\n- ")  
+
