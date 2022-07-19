@@ -1,125 +1,119 @@
 import math
 
+def check_var(calculation) :
+    string = calculation
+    for variable in ["+", "-", "x", "/" ] :
+        check = str(string).split(variable) 
+        string = ""
+        for i in check :
+            try :
+                int(i)
+                check = check.remove(i)             
+            except :
+                string += i
+                continue
+
+                
 def try_sum(num_str) :
     sum = 0 
     output_list = []
     for i in num_str :
         num_list = str(i).split("+")
-        if len(num_list) > 1 :
-            for i in num_list : 
-                try :
-                    a = int(i) 
-                    sum += a 
-                except :
+        for i in num_list : 
+            try :
+                a = int(i) 
+                sum += a 
+            except :
+                if "-" not in i and "x" in i :
+                    mul_output = try_mul(i)
+                    sum += mul_output
+                elif "x" and "-" not in i :
+                    div_output=  try_div(i)
+                    sum += div_output
+                else:  
                     output_list.append(i)
                     continue 
-        else  :
-            continue
     return [sum, output_list]
 
 def try_sub(num_str) :
     final_sub = 0
-    next_check_output_list = []
     num_list = []
     sub_list = []
     for i in num_str : 
-        num_list = str(i).split("-")
-        if len(num_list) > 1 :
-            if "x" in num_list[0] :
-                a = int(num_list[0][0])
-                b = num_list[0][1:]
-                new_str= str(a*-1) + b
-                num_list[0] = new_str
-                
-            try :
-                sub = int(num_list[0])
-                for i in num_list[1:len(num_list)+1] : 
-                    try :
-                        a = int(i)
-                        sub -= a
-                    except :
-                        next_check_output_list.append(i)
+        num_list = str(i).split("-")     
+        try :
+            sub = int(num_list[0])
+            for i in num_list[1:len(num_list)+1] : 
+                try :
+                    sub -= int(i)
+                except :
+                    if "x" not in i :
+                        div_output=  try_div(i)
+                        sub -= div_output
+                    else:  
+                        mul_output = try_mul(i)
+                        sub -= mul_output
                         continue
-                sub_list.append(int(sub))
-                final_sub = sum(sub_list)
-                
-            except : 
-                sub = 0
-                for i in num_list : 
-                    try :
-                        a = int(i)
-                        sub -= a
-                    except :
-                        next_check_output_list.append(i)
+            sub_list.append(int(sub))
+            
+        except : 
+            if "x" not in i :
+                div_output=  try_div(num_list[0])
+                sub = div_output
+            else:  
+                mul_output = try_mul(num_list[0])
+                sub = mul_output
+            for i in num_list[1:len(num_list)+1] : 
+                try :       
+                    sub -= int(i)
+                except :
+                    if "x" not in i :
+                        div_output=  try_div(i)
+                        sub -= div_output
+                    else:  
+                        mul_output = try_mul(i)
+                        sub -= mul_output
                         continue
-                sub_list.append(int(sub))
-                final_sub = sum(sub_list)
-        else  :
-            continue
-    return [int(final_sub), next_check_output_list]
+            sub_list.append(int(sub))
+    final_sub = sum(sub_list)
+    return int(final_sub)
 
 def try_mul(num_str) :
     final_mul = 0
-    next_check_output_list = []
-    num_list = []
     mul_list = []
-    for i in num_str : 
-        if "-" not in i[1:] :
-            mul = 1
-            num_list = str(i).split("x")
-            if len(num_list) > 1 :
-                for i in num_list : 
-                        try :
-                            a = int(i)
-                            mul *= a
-                        except :
-                            num_list.remove(i)
-                            next_check_output_list.append(i)
-                            continue             
-                mul_list.append(mul)
-                final_mul = math.prod(mul_list)
-            else : 
-                next_check_output_list.append(i)
-                continue
-    print(final_mul)
-    return [final_mul, next_check_output_list]
+    mul = 1
+    num_list = str(num_str).split("x")
+    for i in num_list :
+        if "/" in  i :
+            div_output = try_div(i)
+            if div_output == 0 :
+                div_output = 1
+
+            mul = div_output
+        else:     
+            mul = int(i)           
+        mul_list.append(mul)
+    final_mul = math.prod(mul_list)
+    return int(final_mul)
 
 def try_div(num_str) :
-    final_mul = 0
-    next_check_output_list = []
-    num_list = []
-    mul_list = []
-    for i in num_str : 
-        if "-" not in i[1:] :
-            mul = 1
-            num_list = str(i).split("x")
-            if len(num_list) > 1 :
-                for i in num_list : 
-                        try :
-                            a = int(i)
-                            mul *= a
-                        except :
-                            num_list.remove(i)
-                            next_check_output_list.append(i)
-                            continue             
-                mul_list.append(mul)
-                final_mul = math.prod(mul_list)
-            else : 
-                next_check_output_list.append(i)
-                continue
-    print(final_mul)
-    return [final_mul, next_check_output_list]
-
-calculation = input("Enter the calculation you want to perform\n- ")
+    final_div=0
+    num_list = str(num_str).split("/")
+    if len(num_list) > 1 :
+        final_div = int(num_list[0])
+        for i in num_list[1:] : 
+                try :
+                    final_div /= int(i)
+                except :
+                    continue        
+    return float(final_div)
 
 def calc() : 
+    calculation = input("Enter the calculation you want to perform\n- ")
+    
     sum_output = try_sum([calculation])
     sub_output = try_sub(sum_output[1])
-    mult_output_by_sum = try_mul(sum_output[1])
-    mult_output_by_sub = try_mul(sub_output[1])
+    print(int(sum_output[0]) + sub_output)
 
-    print(int(sum_output[0]) + sub_output[0] + mult_output_by_sum[0] - mult_output_by_sub[0])
-
-
-
-calc()
+while 1 < 2 :
+    calc()
