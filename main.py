@@ -43,7 +43,7 @@ def try_sub(num_str) :
         num_list = str(i).split("-")     
         try :
             sub = int(num_list[0])
-            for i in num_list[1:len(num_list)+1] : 
+            for i in num_list[1:] : 
                 i = str(i).strip()
                 try :
                     sub -= int(i)
@@ -64,7 +64,7 @@ def try_sub(num_str) :
             else:  
                 mul_output = try_mul(num_list[0])
                 sub = mul_output
-            for i in num_list[1:len(num_list)+1] : 
+            for i in num_list[1:] : 
                 i = str(i).strip()
                 try :       
                     sub -= int(i)
@@ -118,8 +118,7 @@ def calc(calculation) :
     ans = int(sum_output[0]) + sub_output
     print(ans)
 
-calculation = input("Enter the calculation you want to perform\n- ")  
+calculation = input("Enter the calculation you want to perform\n- ") 
 while calculation.lower() != 'end' :
     calc(calculation)
-    calculation = input("Enter the calculation you want to perform\n- ")  
-
+    calculation = input("Enter the calculation you want to perform\n- ")
